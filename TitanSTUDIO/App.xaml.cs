@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Windows;
-using TitanSTUDIO.Views;
 using SampleWpfLibrary;
-using TitanSTUDIO.StartupHelpers;
+using System.Windows;
+using TitanSTUDIO.ViewModels;
+using TitanSTUDIO.Views;
 
 namespace TitanSTUDIO;
 
@@ -16,18 +16,19 @@ public partial class App : Application
         AppHost = Host.CreateDefaultBuilder()
             .ConfigureServices((hostContext, services) => 
             {
-                services.AddSingleton<MainViewDI>();
-                services.AddViewFactory<ChildView>();
                 services.AddTransient<IDataAccess, DataAccess>();
-            })
-            .Build();
+               // services.AddScoped<ChildViewModel>();
+               // services.AddScoped<ChildView>();
+                services.AddSingleton<MainViewModel>();
+                services.AddSingleton<MainView>();
+            }).Build();
     }
 
     protected override async void OnStartup(StartupEventArgs e)
     {
         await AppHost!.StartAsync();
 
-        var startupForm = AppHost.Services.GetRequiredService<MainViewDI>();
+        var startupForm = AppHost.Services.GetRequiredService<MainView>();
         startupForm.Show();
 
         base.OnStartup(e);
